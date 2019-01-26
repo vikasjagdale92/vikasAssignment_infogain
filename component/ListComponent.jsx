@@ -25,13 +25,26 @@ export default class ListComponent extends Component{
 		
 	}
 
+	 /*--------------- Search User, we can search by first name or last name  --------------*/
 
-	getSearchValue(value){
+    buildRegExp(searchText) {
+     var words = searchText.trim().split(/[ \-\:]+/);
+     var exps = _.map(words, function(word) {
+        return "(?=.*" + word + ")";
+     });
 
+     var fullExp = exps.join('') + ".+";
+     return new RegExp(fullExp, "i");
+  }
+
+
+	getSearchValue(searchVal){
+		var value = this.buildRegExp(searchVal);
 		Meteor.call("findResult",value,(err,res)=>{
 			if(err){
 				alert("No match found");
 			}else{
+
 				this.setState({
 					InformationArr : res,
 				});
@@ -44,6 +57,13 @@ export default class ListComponent extends Component{
 		return(
 			<div className="col-lg-12">
 			    <SearchComponent getAttribute={this.getSearchValue.bind(this)}/>
+			    <div id="loader-wrapper">
+				    <div id="loader"></div>
+				 
+				    <div className="loader-section section-left"></div>
+				    <div className="loader-section section-right"></div>
+				 
+				</div>
 				<table className="table table-striped table-hover myTable table-bordered">
 				    <thead>
 				      <tr className="tableHeader">

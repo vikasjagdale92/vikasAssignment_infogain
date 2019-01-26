@@ -8,6 +8,11 @@ Meteor.methods({
 	},
 
 	"findResult":function(value){
-		return AddInformation.find({$or:[{"id":value},{"name":value},{"gender":value}]}).fetch();
+		if(value){
+			return AddInformation.find({$or:[{"id":value},{"name":value},{"gender":value}]}).fetch();
+		}else{
+			return AddInformation.find({}).fetch();
+
+		}
 	}
 })
